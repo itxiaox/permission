@@ -1,0 +1,2 @@
+include ':app', ':annotation', ':complier', ':library'
+rootProject.name='XPermission'
