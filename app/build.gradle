@@ -29,9 +29,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
     //引入注解
-    implementation project(':annotation')
+    implementation project(path: ':annotation')
     //引入library
-    implementation project(':library')
+    implementation project(path:':library')
     //注解处理器
-    annotationProcessor project(':complier')
+    annotationProcessor project(path:':complier')
 }

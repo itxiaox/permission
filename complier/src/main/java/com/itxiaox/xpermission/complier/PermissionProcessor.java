@@ -90,6 +90,7 @@ public class PermissionProcessor extends AbstractProcessor {
         Map<String, List<ExecutableElement>>  onPermissionDenied =  getAnnotation(roundEnv,OnPermissionDenied.class);
         Map<String, List<ExecutableElement>>  onShowRationale =  getAnnotation(roundEnv,OnShowRationale.class);
 
+        printMsg("process 开始生成类了");
 
         //*********开始生成类了******
 
@@ -102,13 +103,13 @@ public class PermissionProcessor extends AbstractProcessor {
             final String CLASS_SUFFIX = "$Permission";
             //创建一个新的源文件（Class）,并返回一个对象以允许写入它
 
-            printMsg(activityName);
+            printMsg("activityName="+activityName);
             try {
                 Filer filer = processingEnv.getFiler();
                 JavaFileObject javaFileObject = filer.createSourceFile(activityName + CLASS_SUFFIX);
                 //通过方法标签获取包名标签，（任意一个属性标签的父节点都是同一个包名）
                 String packageName = getPackageName(needsPermissionElements.get(0));
-
+                printMsg("packageName="+activityName);
 
                 //定义Writer对象，开启真正的一行一行的来写代码
                 Writer writer = javaFileObject.openWriter();
@@ -117,63 +118,89 @@ public class PermissionProcessor extends AbstractProcessor {
 
                 //生成包
                 writer.write("package "+ packageName +";\n");
+                printMsg("package "+ packageName +";\n");
                 //生成要导入的接口类（必须手动导入）
                 writer.write("import com.itxiaox.xpermission.library.listener.PermissionRequest;\n");
+                printMsg("import com.itxiaox.xpermission.library.listener.PermissionRequest;\n");
+
                 writer.write("import com.itxiaox.xpermission.library.listener.RequestPermission;\n");
+                printMsg("import com.itxiaox.xpermission.library.listener.RequestPermission;\n");
+
+                writer.write("import com.itxiaox.xpermission.library.utils.PermissionUtils;\n");
+                printMsg("import com.itxiaox.xpermission.library.utils.PermissionUtils;\n");
+
                 writer.write("import androidx.appcompat.app.AppCompatActivity;\n");
-                writer.write("import android.support.annotation.NonNull;\n");
+//                writer.write("import android.support.annotation.NonNull;\n");
+                printMsg("import androidx.appcompat.app.AppCompatActivity;\n");
+
+                writer.write("import androidx.core.app.ActivityCompat;\n");
+                printMsg("import androidx.core.app.ActivityCompat;\n");
+
                 writer.write("import java.lang.ref.WeakReference;\n");
-
+                printMsg("import java.lang.ref.WeakReference;\n");
                 //生成类
-                writer.write("public class "+ activitySimpleName +""+ "implements RequestPermission<"+activityName+">{\n");
-
+                writer.write("public class "+ activitySimpleName + " implements RequestPermission<"+activityName+"> {\n");
+                printMsg("public class "+ activitySimpleName + " implements RequestPermission<"+activityName+"> {\n");
 
                 //生成常量属性
                 writer.write("private static final int REQUEST_SHOWCAMERA = 666;\n");
+                printMsg("private static final int REQUEST_SHOWCAMERA = 666;\n");
                 writer.write("private static String[] PERMISSION_SHOWCAMERA;\n");
-
+                printMsg("private static String[] PERMISSION_SHOWCAMERA;\n");
 
                 //生成requestPermission方法
                 writer.write("public void requestPermission(" + activityName + " target,String[] permissions){\n");
-                writer.write("REQUEST_SHOWCAMERA =  permissions;\n");
+                printMsg("public void requestPermission(" + activityName + " target,String[] permissions){\n");
+
+                writer.write("PERMISSION_SHOWCAMERA =  permissions;\n");
+                printMsg("PERMISSION_SHOWCAMERA =  permissions;\n");
                 writer.write("if  (PermissionUtils.hasSelfPermissions(target,PERMISSION_SHOWCAMERA)){\n");
+                printMsg("if  (PermissionUtils.hasSelfPermissions(target,PERMISSION_SHOWCAMERA)){\n");
                 //循环生成MainActivity每个权限申请方法
                 for (ExecutableElement executableElement : needsPermissionElements) {
                     //获取方法名
                     String methodName = executableElement.getSimpleName().toString();
                     //调用申请权限方法
                     writer.write("target."+methodName+"();\n");
+                    printMsg("target."+methodName+"();\n");
                 }
                 writer.write("} else if(PermissionUtils.shouldShowRequestPermissionRationale(target,PERMISSION_SHOWCAMERA)){\n");
-
+                printMsg("} else if(PermissionUtils.shouldShowRequestPermissionRationale(target,PERMISSION_SHOWCAMERA)){\n");
                 //循环生成Mainactiviy每个提示用户为何要开启权限的方法
                 if (onShowRationaleElements !=null && !onShowRationaleElements.isEmpty()){
-                    for (ExecutableElement executableElement : onNeverAskAgainElements) {
+                    for (ExecutableElement executableElement : onShowRationaleElements) {
                         //获取方法名
                         String methodName = executableElement.getSimpleName().toString();
                         //调用提示用户为何要开启权限方法
                         writer.write("target."+methodName+"(new PermissionRequestImpl(target));\n");
+
+                        printMsg("target."+methodName+"(new PermissionRequestImpl(target));\n");
                     }
                 }
 
                 writer.write("} else {\n");
+                printMsg("} else {\n");
                 writer.write("ActivityCompat.requestPermissions(target,PERMISSION_SHOWCAMERA,REQUEST_SHOWCAMERA);\n}\n}\n");
-
-                //生成onRequestPermissionResult方法
-                writer.write("public void onRequestPermissionResult("+ activityName +" target,int requestCode,@NonNull int[] grantResults ){\n");
+                printMsg("ActivityCompat.requestPermissions(target,PERMISSION_SHOWCAMERA,REQUEST_SHOWCAMERA);\n}\n}\n");
+                //生成onRequestPermissionsResult方法
+                writer.write("public void onRequestPermissionsResult("+ activityName +" target,int requestCode,int[] grantResults ){\n");
+                printMsg("public void onRequestPermissionsResult("+ activityName +" target,int requestCode,int[] grantResults ){\n");
                 writer.write("switch(requestCode) {\n");
+                printMsg("switch(requestCode) {\n");
                 writer.write("case REQUEST_SHOWCAMERA:\n");
+                printMsg("case REQUEST_SHOWCAMERA:\n");
                 writer.write("if (PermissionUtils.verifyPermissions(grantResults)){\n");
-
+                printMsg("if (PermissionUtils.verifyPermissions(grantResults)){\n");
                 //循环生成MainActivity每个权限申请方法
                 for (ExecutableElement executableElement : needsPermissionElements) {
                     //获取方法名
                     String methodName = executableElement.getSimpleName().toString();
                     //调用申请权限的方法
                     writer.write("target."+methodName+"();\n");
+                    printMsg("target."+methodName+"();\n");
                 }
-                writer.write("} else if (!PermissionUtils.shouldShowRequestPermissionRational(target,PERMISSION_SHOWCAMERA)){\n");
-
+                writer.write("} else if (!PermissionUtils.shouldShowRequestPermissionRationale(target,PERMISSION_SHOWCAMERA)){\n");
+                printMsg("} else if (!PermissionUtils.shouldShowRequestPermissionRationale(target,PERMISSION_SHOWCAMERA)){\n");
                 //循环生成MainActivity每个不在询问后的提示
                 if (onNeverAskAgainElements !=null && !onNeverAskAgainElements.isEmpty()){
                     for (ExecutableElement executableElement : onNeverAskAgainElements) {
@@ -181,10 +208,11 @@ public class PermissionProcessor extends AbstractProcessor {
                         String methodName = executableElement.getSimpleName().toString();
 
                         writer.write("target."+methodName+"();\n");
+                        printMsg("target."+methodName+"();\n");
                     }
                 }
                 writer.write("} else {\n");
-
+                printMsg("} else {\n");
 
                 //循环生成MainActivity每个拒绝时的提示方法
                 if(onPermissionDenied !=null && !onPermissionDeniedElements.isEmpty()){
@@ -193,16 +221,41 @@ public class PermissionProcessor extends AbstractProcessor {
                         String method = executableElement.getSimpleName().toString();
                         //调用拒绝时的提示方法
                         writer.write("target."+method+"();\n");
+                        printMsg("target."+method+"();\n");
                     }
                 }
                 writer.write("}\nbreak;\ndefault: \nbreak;\n}\n}\n");
+                printMsg("}\nbreak;\ndefault: \nbreak;\n}\n}\n");
 
                 //生成接口实现类：PermissionRequestImpl implements PermissionRequest
                 writer.write("private static final class PermissionRequestImpl implements PermissionRequest {\n");
+                printMsg("private static final class PermissionRequestImpl implements PermissionRequest {\n");
+
                 writer.write("private final WeakReference<"+ activityName +"> weakTarget;\n");
+                printMsg("private final WeakReference<"+ activityName +"> weakTarget;\n");
+
                 writer.write("private PermissionRequestImpl("+activityName+" target){\n");
+                printMsg("private PermissionRequestImpl("+activityName+" target){\n");
+
+                writer.write("this.weakTarget = new WeakReference(target);\n}\n");
+                printMsg("this.weakTarget = new WeakReference(target);\n}\n");
+
+                writer.write("public void proceed(){\n");
+                printMsg("public void proceed(){\n");
+
+                writer.write(activityName+" target = ("+activityName+") this.weakTarget.get();\n");
+                printMsg(activityName+" target = ("+activityName+") this.weakTarget.get();\n");
+
                 writer.write("if (target != null ) {\n");
-                writer.write("ActivityCompat.requestPermissions(target, PERMISSION_SHOWCAMERA,REQUEST_SHOWCAMERA);\n}\n}\n}\n");
+                printMsg("if (target != null ) {\n");
+
+
+                writer.write("ActivityCompat.requestPermissions(target, PERMISSION_SHOWCAMERA,REQUEST_SHOWCAMERA);" +
+                        "\n}\n}\n}\n");
+                printMsg("ActivityCompat.requestPermissions(target, PERMISSION_SHOWCAMERA,REQUEST_SHOWCAMERA);" +
+                        "\n}\n}\n}\n");
+                writer.write("\n}");
+                printMsg("\n}");
                 //最后结束标签，代码生成完成。
                 writer.close();
             } catch (IOException e) {

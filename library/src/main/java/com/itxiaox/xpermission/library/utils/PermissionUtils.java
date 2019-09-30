@@ -39,7 +39,7 @@ public class PermissionUtils {
      * @param permissions 权限集合
      * @return 如果所有权限已经允许，则返回true
      */
-    public static boolean hasSelfPermission(Context context,String... permissions){
+    public static boolean hasSelfPermissions(Context context,String... permissions){
         for (String permission : permissions) {
             if (!hasSelfPermission(context,permission)){
                 return false;

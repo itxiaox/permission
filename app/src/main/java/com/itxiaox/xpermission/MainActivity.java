@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public void denied(){
         Log.d(TAG, "denied: ");
     }
+
     @OnShowRationale()
     void showRationaleForCamera(final PermissionRequest request){
         Log.d(TAG, "showRationaleForCamera: ");
