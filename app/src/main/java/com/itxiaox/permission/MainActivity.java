@@ -2,11 +2,11 @@ package com.itxiaox.permission;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.itxiaox.permission.annotation.NeedsPermission;
 import com.itxiaox.permission.annotation.OnNeverAskAgain;
@@ -16,7 +16,7 @@ import com.itxiaox.permission.library.PermissionDialog;
 import com.itxiaox.permission.library.PermissionManager;
 import com.itxiaox.permission.library.listener.PermissionRequest;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
@@ -41,7 +41,6 @@ public class MainActivity extends BaseActivity {
      */
     @NeedsPermission()
     void showCamera() {
-//        Log.d(TAG, "showCamera: ");
         Toast.makeText(MainActivity.this, "获取到权限", Toast.LENGTH_SHORT).show();
     }
 
@@ -50,7 +49,6 @@ public class MainActivity extends BaseActivity {
      */
     @OnPermissionDenied()
     public void denied() {
-        Log.d(TAG, "denied: ");
         Toast.makeText(MainActivity.this, "权限被拒绝：", Toast.LENGTH_SHORT).show();
 
     }
@@ -62,23 +60,21 @@ public class MainActivity extends BaseActivity {
      */
     @OnShowRationale()
     void showRationaleForCamera(final PermissionRequest request) {
-        Log.d(TAG, "showRationaleForCamera: ");
         //再次请求权限
 //        request.proceed();
-        PermissionDialog.showRationale(this,request,
-                "权限说明","您需要此权限进行相关操作");
+        PermissionDialog.showRationale(this, request,
+                "权限说明", "您需要此权限进行相关操作");
     }
 
     @OnNeverAskAgain()
     void onNeverAgain() {
-        Log.d(TAG, "onNeverAgain: ");
         PermissionDialog.showNeverAgain(this, "权限已拒绝",
                 "您已经拒接了相关权限，请去设置中开启");
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         PermissionManager.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
