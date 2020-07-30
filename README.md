@@ -70,7 +70,7 @@ allprojects {
      */
     @NeedsPermission()
     void showCamera() {
-//        Log.d(TAG, "showCamera: ");
+        //  Log.d(TAG, "showCamera: ");
         Toast.makeText(MainActivity.this, "获取到权限", Toast.LENGTH_SHORT).show();
     }
 
@@ -106,8 +106,8 @@ allprojects {
             }
         }).create().show();
         //再次请求权限
-//        request.proceed();
-    }
+      //  request.proceed();
+      }
 
     @OnNeverAskAgain()
     void onNeverAgain() {
@@ -118,14 +118,14 @@ allprojects {
 
     }
 
-//    @Override
+    //@Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Log.d(TAG, "onRequestPermissionsResult: ");
         Toast.makeText(MainActivity.this, "获取权限结果："+grantResults.length, Toast.LENGTH_SHORT).show();
         PermissionManager.onRequestPermissonsResult(this,requestCode,grantResults);
-    }
-}
+     }
+   }
 
   
   ```
