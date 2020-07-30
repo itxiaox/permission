@@ -108,7 +108,7 @@ allprojects {
         PermissionManager.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-}
+  }
 
 
   
