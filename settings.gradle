@@ -1,2 +1,2 @@
-include ':app', ':annotation', ':complier', ':library'
-rootProject.name='XPermission'
+include ':app', ':annotation', ':permission-processor', ':permission'
+rootProject.name='permission'

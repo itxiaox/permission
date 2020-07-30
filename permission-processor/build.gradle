@@ -1,0 +1,23 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(path: ':annotation')
+
+    //引入google 注解处理器服务,AutoService 主要的作用是注解 processor 类，并对其生成 META-INF 的配置信息。
+    annotationProcessor 'com.google.auto.service:auto-service:1.0-rc4'
+    compileOnly "com.google.auto.service:auto-service:1.0-rc4"
+    //JavaPoet 这个库的主要作用就是帮助我们通过类调用的形式来生成代码。
+//    implementation 'com.squareup:javapoet:1.11.1'
+
+
+}
+
+//解决中文乱码问题（错误，编码GBK的不可映射字符）
+tasks.withType(JavaCompile){
+    options.encoding = "UTF-8"
+}
+sourceCompatibility = "8"
+targetCompatibility = "8"
+
+apply from : "../publishJavaLib.gradle"

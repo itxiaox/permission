@@ -1,44 +1,42 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
+
+
     defaultConfig {
-        applicationId "com.itxiaox.permission"
         minSdkVersion 22
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 sourceCompatibility = "8"
 targetCompatibility = "8"
-//task processorTask(type: Exec) {
-//    //将编译出的java library对应的jar包，复制到app module的libs下
-//    commandLine 'cp', '../complier/build/libs/complier.jar', 'libs/'
-//}
-//
-//processorTask.dependsOn(':complier:build')
-//preBuild.dependsOn(processorTask)
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+//引入注解
+    api project(path: ':annotation')
+    //注解处理器
+//    implementation project(path:':complier')
+
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation project(path: ':annotation')
+    implementation project(path: ':permission-processor')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-
-    //引入注解
-//    implementation project(path: ':annotation')
-    //引入library
-    implementation project(path: ':permission')
-    //注解处理器
-    annotationProcessor project(path: ':permission-processor')
 }
+
+apply from : "../publishAndroidLib.gradle"
