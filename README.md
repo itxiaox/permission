@@ -29,27 +29,25 @@ allprojects {
 
 - 代码中使用
   ```
-  package com.itxiaox.permission;
+    package com.itxiaox.permission;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+    import androidx.annotation.NonNull;
+    import androidx.appcompat.app.AlertDialog;
+    import androidx.appcompat.app.AppCompatActivity;
+    import android.Manifest;
+    import android.content.DialogInterface;
+    import android.os.Bundle;
+    import android.util.Log;
+    import android.view.View;
+    import android.widget.Toast;
+    import com.itxiaox.permission.annotation.NeedsPermission;
+    import com.itxiaox.permission.annotation.OnNeverAskAgain;
+    import com.itxiaox.permission.annotation.OnPermissionDenied;
+    import com.itxiaox.permission.annotation.OnShowRationale;
+    import com.itxiaox.permission.library.PermissionManager;
+    import com.itxiaox.permission.library.listener.PermissionRequest;
 
-import android.Manifest;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
-import com.itxiaox.permission.annotation.NeedsPermission;
-import com.itxiaox.permission.annotation.OnNeverAskAgain;
-import com.itxiaox.permission.annotation.OnPermissionDenied;
-import com.itxiaox.permission.annotation.OnShowRationale;
-import com.itxiaox.permission.library.PermissionManager;
-import com.itxiaox.permission.library.listener.PermissionRequest;
-
-public class MainActivity extends AppCompatActivity {
+    public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
