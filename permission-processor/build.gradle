@@ -20,4 +20,4 @@ tasks.withType(JavaCompile){
 sourceCompatibility = "8"
 targetCompatibility = "8"
 
-//apply from : "../publishJavaLib.gradle"
+apply from : "../publishJavaLib.gradle"

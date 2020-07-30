@@ -34,11 +34,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-
+//
+//    implementation 'com.github.itxiaox:permission:0.0.3'
+//    annotationProcessor "com.github.itxiaox.premission:permission-processor:0.0.3"
     //引入注解
 //    implementation project(path: ':annotation')
-    //引入library
+//    引入library
     implementation project(path: ':android-permission')
-    //注解处理器
+//    注解处理器
     annotationProcessor project(path: ':permission-processor')
 }
