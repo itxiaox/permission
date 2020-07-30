@@ -134,6 +134,7 @@ public class PermissionProcessor extends AbstractProcessor {
         writer.write("package "+ packageName +";\n");
         printMsg("package "+ packageName +";\n");
         //生成要导入的接口类（必须手动导入）
+        writer.write("import com.itxiaox.permission.library.PermissionManager;\n");
         writer.write("import com.itxiaox.permission.library.listener.PermissionRequest;\n");
         printMsg("import com.itxiaox.permission.library.listener.PermissionRequest;\n");
 
@@ -153,7 +154,7 @@ public class PermissionProcessor extends AbstractProcessor {
         writer.write("import java.lang.ref.WeakReference;\n");
         printMsg("import java.lang.ref.WeakReference;\n");
         //生成类
-        writer.write("public class "+ activitySimpleName + " implements RequestPermission<"+activityName+"> {\n");
+        writer.write("public class "+ activitySimpleName + " extends AppCompatActivity implements RequestPermission<"+activityName+"> {\n");
         printMsg("public class "+ activitySimpleName + " implements RequestPermission<"+activityName+"> {\n");
 
         //生成常量属性
@@ -162,12 +163,14 @@ public class PermissionProcessor extends AbstractProcessor {
         writer.write("private static String[] PERMISSION_SHOWCAMERA;\n");
         printMsg("private static String[] PERMISSION_SHOWCAMERA;\n");
 
+        writer.write(" private  WeakReference<"+activityName+"> weakTarget;\n");
+
         //生成requestPermission方法
         writer.write("public void requestPermission(" + activityName + " target,String[] permissions){\n");
         printMsg("public void requestPermission(" + activityName + " target,String[] permissions){\n");
-
         writer.write("PERMISSION_SHOWCAMERA =  permissions;\n");
         printMsg("PERMISSION_SHOWCAMERA =  permissions;\n");
+        writer.write("this.weakTarget = new WeakReference(target);\n");
         writer.write("if  (PermissionUtils.hasSelfPermissions(target,PERMISSION_SHOWCAMERA)){\n");
         printMsg("if  (PermissionUtils.hasSelfPermissions(target,PERMISSION_SHOWCAMERA)){\n");
         //循环生成MainActivity每个权限申请方法
@@ -268,6 +271,21 @@ public class PermissionProcessor extends AbstractProcessor {
                 "\n}\n}\n}\n");
         printMsg("ActivityCompat.requestPermissions(target, PERMISSION_SHOWCAMERA,REQUEST_SHOWCAMERA);" +
                 "\n}\n}\n}\n");
+
+        //  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //        PermissionManager.onRequestPermissionsResult(this,requestCode,grantResults);
+        //    }
+        writer.write("public void onRequestPermissionsResult(int requestCode,  String[] permissions,  int[] grantResults) {\n");
+        writer.write(" super.onRequestPermissionsResult(requestCode, permissions, grantResults);\n");
+        writer.write(activityName+" target = ("+activityName+") this.weakTarget.get();\n");
+        printMsg(activityName+" target = ("+activityName+") this.weakTarget.get();\n");
+        writer.write("if (target != null ) {\n");
+        printMsg("if (target != null ) {\n");
+        writer.write("PermissionManager.onRequestPermissionsResult(target,requestCode,grantResults);\n");
+        writer.write("}\n");
+        writer.write("\n}");
+
         writer.write("\n}");
         printMsg("\n}");
         //最后结束标签，代码生成完成。

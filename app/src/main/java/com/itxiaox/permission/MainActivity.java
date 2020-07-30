@@ -1,26 +1,28 @@
 package com.itxiaox.permission;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.itxiaox.permission.annotation.NeedsPermission;
 import com.itxiaox.permission.annotation.OnNeverAskAgain;
 import com.itxiaox.permission.annotation.OnPermissionDenied;
 import com.itxiaox.permission.annotation.OnShowRationale;
+import com.itxiaox.permission.library.PermissionDialog;
 import com.itxiaox.permission.library.PermissionManager;
 import com.itxiaox.permission.library.listener.PermissionRequest;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
+
+    String[] permissions = new String[]{Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            , Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,17 +33,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void camera(View view) {
-        PermissionManager.request(this, new String[]{Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-                , Manifest.permission.READ_EXTERNAL_STORAGE});
+        PermissionManager.request(this, permissions);
     }
 
+    /**
+     * 权限通过的注解
+     */
     @NeedsPermission()
     void showCamera() {
 //        Log.d(TAG, "showCamera: ");
         Toast.makeText(MainActivity.this, "获取到权限", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * 权限拒绝的注解
+     */
     @OnPermissionDenied()
     public void denied() {
         Log.d(TAG, "denied: ");
@@ -49,42 +55,31 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * 权限说明的拒绝，一般这里可以采用一个对话框说明该权限的作用
+     *
+     * @param request
+     */
     @OnShowRationale()
     void showRationaleForCamera(final PermissionRequest request) {
-
-
         Log.d(TAG, "showRationaleForCamera: ");
-        Toast.makeText(MainActivity.this, "权限说明showRationaleForCamera", Toast.LENGTH_SHORT).show();
-
-        new AlertDialog.Builder(MainActivity.this).setTitle("权限被拒绝了")
-                .setMessage("拍照需要此权限")
-                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                }).setPositiveButton("允许", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                request.proceed();
-            }
-        }).create().show();
         //再次请求权限
 //        request.proceed();
+        PermissionDialog.showRationale(this,request,
+                "权限说明","您需要此权限进行相关操作");
     }
 
     @OnNeverAskAgain()
     void onNeverAgain() {
         Log.d(TAG, "onNeverAgain: ");
-        Toast.makeText(MainActivity.this, "再次请求onNeverAgain", Toast.LENGTH_SHORT).show();
-
+        PermissionDialog.showNeverAgain(this, "权限已拒绝",
+                "您已经拒接了相关权限，请去设置中开启");
     }
 
-//    @Override
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d(TAG, "onRequestPermissionsResult: ");
-        Toast.makeText(MainActivity.this, "获取权限结果："+grantResults.length, Toast.LENGTH_SHORT).show();
-        PermissionManager.onRequestPermissonsResult(this,requestCode,grantResults);
+        PermissionManager.onRequestPermissionsResult(this, requestCode, grantResults);
     }
+
 }
