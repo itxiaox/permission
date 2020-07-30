@@ -1,2 +1,2 @@
-include ':app', ':annotation', ':permission-processor', ':permission'
+include ':app', ':annotation', ':permission-processor', ':android-permission'
 rootProject.name='permission'
