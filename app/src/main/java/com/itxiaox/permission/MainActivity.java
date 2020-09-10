@@ -29,11 +29,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new Fragment();
+                fragment.show(getSupportFragmentManager(),"diaglog_premission");
+            }
+        });
 
     }
 
     public void camera(View view) {
-        PermissionManager.request(this, permissions);
+        PermissionManager.request(this,
+                permissions);
     }
 
     /**
@@ -41,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
      */
     @NeedsPermission()
     void showCamera() {
-        Toast.makeText(MainActivity.this, "获取到权限", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this,
+                "获取到权限", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -73,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         PermissionManager.onRequestPermissionsResult(this, requestCode, grantResults);
     }
