@@ -22,8 +22,8 @@ allprojects {
 
 - 在需要动态权限的模块中添加依赖
 ```
-  annotationProcessor  "com.github.itxiaox.permission:permission-processor:1.0.0"
-    implementation  "com.github.itxiaox.permission:android-permission:1.0.0"
+  annotationProcessor  "com.github.itxiaox.permission:permission-processor:1.0.1"
+    implementation  "com.github.itxiaox.permission:android-permission:1.0.1"
 
 ```
 
